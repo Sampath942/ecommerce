@@ -10,6 +10,7 @@ type Config struct {
 	Port            string `mapstructure:"PORT"`
 	DatabaseURL     string `mapstructure:"DATABASE_URL"`
 	TestDatabaseURL string `mapstructure:"TEST_DATABASE_URL`
+	JWTSecret string `mapstructure:"JWT_SECRET_KEY"`
 }
 
 var AppConfig *Config

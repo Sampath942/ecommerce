@@ -6,6 +6,7 @@ import (
 	"github.com/Sampath942/ecommerce/config"
 	"github.com/Sampath942/ecommerce/db"
 	userhandler "github.com/Sampath942/ecommerce/internal/user/handler"
+	authhandler "github.com/Sampath942/ecommerce/internal/auth/handler"
 	"github.com/gin-gonic/gin"
 )
 
@@ -15,12 +16,14 @@ func main() {
 	if err != nil {
 		log.Fatal(err.Error())
 	}
+	authHandler := authhandler.NewAuthHandler() 
 	userHandler := userhandler.UserHandler{
 		DB: database,
+		AuthHandler: authHandler,
 	}
 	r := gin.Default()
-	r.GET("/user", userHandler.GetUser)
-	r.POST("/user", userHandler.AddUser)
+	r.POST("/login", userHandler.LoginUser)
+	r.POST("/user", userHandler.AddCustomer)
 	r.PUT("/user", userHandler.UpdateUser)
 	r.DELETE("/user", userHandler.DeleteUser)
 	r.Run(":" + config.AppConfig.Port)

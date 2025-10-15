@@ -4,6 +4,7 @@ import (
 	"errors"
 
 	"github.com/Sampath942/ecommerce/config"
+	"github.com/Sampath942/ecommerce/internal/user/models"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -14,7 +15,7 @@ func NewTestDatabase() (*Database, error) {
 	if err != nil {
 		return &Database{}, errors.New("couldn't get a connection to the database")
 	}
-	database.AutoMigrate()
+	database.AutoMigrate(&models.User{}, &models.Credentials{})
 	return &Database{
 		DB: database,
 	}, nil
