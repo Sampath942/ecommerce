@@ -35,6 +35,24 @@ func PerformAddUserAndCredentials(addUserReq utils.AddUserRequest, database *db.
 	return user, err
 }
 
+func AddVerificationToken(verificationToken models.VerificationToken, database *db.Database) error {
+	return database.DB.Create(&verificationToken).Error
+}
+
+func GetVerificationDetailsFromToken(token string, database *db.Database) (models.VerificationToken, error) {
+	var verificationToken models.VerificationToken
+	result := database.DB.First(&verificationToken, "token = ?", token)
+	return verificationToken, result.Error
+}
+
+func SetVerificationTokenToUsed(verificationToken models.VerificationToken, database *db.Database) error {
+	return database.DB.Model(&verificationToken).Where("token = ?", verificationToken.Token).Update("used", true).Error
+}
+
+func SetUserEmailVerified(user models.User, database *db.Database) error {
+	return database.DB.Model(&user).Where("id = ?", user.ID).Update("is_email_verified", true).Error
+}
+
 func GetUserById(id int, database *db.Database) (models.User, error) {
 	var user models.User
 	result := database.DB.First(&user, "id = ?", id)

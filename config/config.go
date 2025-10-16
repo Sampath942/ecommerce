@@ -7,10 +7,12 @@ import (
 )
 
 type Config struct {
-	Port            string `mapstructure:"PORT"`
-	DatabaseURL     string `mapstructure:"DATABASE_URL"`
-	TestDatabaseURL string `mapstructure:"TEST_DATABASE_URL`
-	JWTSecret string `mapstructure:"JWT_SECRET_KEY"`
+	Port                    string `mapstructure:"PORT"`
+	DatabaseURL             string `mapstructure:"DATABASE_URL"`
+	TestDatabaseURL         string `mapstructure:"TEST_DATABASE_URL`
+	JWTSecret               string `mapstructure:"JWT_SECRET_KEY"`
+	OtpSendingEmail         string `mapstructure:"OTP_SENDING_EMAIL"`
+	OtpSendingEmailPassword string `mapstructure:"OTP_SENDING_EMAIL_PASSWORD"`
 }
 
 var AppConfig *Config

@@ -15,7 +15,7 @@ func NewTestDatabase() (*Database, error) {
 	if err != nil {
 		return &Database{}, errors.New("couldn't get a connection to the database")
 	}
-	database.AutoMigrate(&models.User{}, &models.Credentials{})
+	database.AutoMigrate(&models.User{}, &models.Credentials{}, &models.VerificationToken{})
 	return &Database{
 		DB: database,
 	}, nil

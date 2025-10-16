@@ -22,8 +22,9 @@ func main() {
 		AuthHandler: authHandler,
 	}
 	r := gin.Default()
+	r.GET("/verify-email", userHandler.VerifyEmail)
 	r.POST("/login", userHandler.LoginUser)
-	r.POST("/user", userHandler.AddCustomer)
+	r.POST("/user", userHandler.AddUser)
 	r.PUT("/user", userHandler.UpdateUser)
 	r.DELETE("/user", userHandler.DeleteUser)
 	r.Run(":" + config.AppConfig.Port)

@@ -21,7 +21,7 @@ func NewProdDatabase() (*Database, error) {
 	if result.Error != nil {
 		return &Database{}, errors.New("couldn't create a new schema")
 	}
-	database.AutoMigrate(&models.Credentials{}, &models.User{})
+	database.AutoMigrate(&models.Credentials{}, &models.User{}, &models.VerificationToken{})
 	return &Database{
 		DB: database,
 	}, nil
