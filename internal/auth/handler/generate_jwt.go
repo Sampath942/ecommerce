@@ -17,10 +17,9 @@ func GenerateJWTToken(uid int, isAdmin bool) (string, error) {
 	mySigningKey := []byte(config.AppConfig.JWTSecret)
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, Claims{
-		UserID:  uid,
-		IsAdmin: isAdmin,
+		UserID: uid,
 		RegisteredClaims: jwt.RegisteredClaims{
-			ExpiresAt: jwt.NewNumericDate(time.Now().Add(24 * time.Hour)),
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(2 * time.Hour)),
 			IssuedAt:  jwt.NewNumericDate(time.Now()),
 			NotBefore: jwt.NewNumericDate(time.Now()),
 			Issuer:    "auth-service",

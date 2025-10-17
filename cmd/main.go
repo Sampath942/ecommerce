@@ -23,6 +23,7 @@ func main() {
 	}
 	r := gin.Default()
 	r.GET("/verify-email", userHandler.VerifyEmail)
+	r.GET("/resend-verification-email", userHandler.AuthMiddleware, userHandler.ResendVerificationEmail)
 	r.POST("/login", userHandler.LoginUser)
 	r.POST("/user", userHandler.AddUser)
 	r.PUT("/user", userHandler.UpdateUser)

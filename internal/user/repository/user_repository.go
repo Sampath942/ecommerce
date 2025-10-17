@@ -2,6 +2,7 @@ package repository
 
 import (
 	"errors"
+	"time"
 
 	"github.com/Sampath942/ecommerce/db"
 	"github.com/Sampath942/ecommerce/internal/user/models"
@@ -42,6 +43,12 @@ func AddVerificationToken(verificationToken models.VerificationToken, database *
 func GetVerificationDetailsFromToken(token string, database *db.Database) (models.VerificationToken, error) {
 	var verificationToken models.VerificationToken
 	result := database.DB.First(&verificationToken, "token = ?", token)
+	return verificationToken, result.Error
+}
+
+func GetValidVerificationDetailsFromUserID(uid int, database *db.Database) (models.VerificationToken, error) {
+	var verificationToken models.VerificationToken
+	result := database.DB.First(&verificationToken, "user_id = ? and used = false and expires_at > ?", uid, time.Now())
 	return verificationToken, result.Error
 }
 

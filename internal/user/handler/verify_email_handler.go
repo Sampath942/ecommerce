@@ -134,3 +134,38 @@ func (h *UserHandler) VerifyEmail(c *gin.Context) {
 		ResponseDetails: "Email successfully verified",
 	})
 }
+
+func (h *UserHandler) ResendVerificationEmail(c *gin.Context) {
+	u, _ := c.Get("user")
+	user := u.(models.User)
+	if user.IsEmailVerified {
+		c.JSON(http.StatusBadRequest, utils.Response{
+			ResponseMessage: "Request Failed",
+			ResponseDetails: "The user is already verified. No need to verify again",
+		})
+		return
+	}
+	_, err := repository.GetValidVerificationDetailsFromUserID(user.ID, h.DB)
+	if err == nil {
+		c.JSON(http.StatusBadRequest, utils.Response{
+			ResponseMessage: "Request Failed",
+			ResponseDetails: "A token is already passed. Check your inbox",
+		})
+		return
+	}
+	token, err := GenerateVerificationToken(user.ID, h.DB)
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, utils.Response{
+			ResponseMessage: "Request Failed",
+			ResponseDetails: "Verification Token cannot be generated.",
+		})
+		return
+	} else {
+		go SendVerificationEmail(user.Email, token)
+	}
+	c.JSON(http.StatusOK, utils.Response{
+		ResponseMessage: "Request successful",
+		ResponseDetails: "Please check your email for further instructions",
+	})
+}

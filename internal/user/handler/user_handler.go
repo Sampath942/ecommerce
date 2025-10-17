@@ -17,7 +17,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func isJWTExistingAndValid(authHeader string, h *UserHandler) (int, bool) {
+func IsJWTExistingAndValid(authHeader string, h *UserHandler) (int, bool) {
 	if authHeader == "" || !strings.HasPrefix(authHeader, "Bearer") {
 		return -1, false
 	}
@@ -63,7 +63,7 @@ func (h *UserHandler) LoginUser(c *gin.Context) {
 	var user models.User
 	var jwtToken string
 	var err error
-	uid, exists := isJWTExistingAndValid(authHeader, h)
+	uid, exists := IsJWTExistingAndValid(authHeader, h)
 	if !exists {
 		var req utils.LoginUserRequest
 		if c.ShouldBindJSON(&req) != nil {
@@ -128,7 +128,7 @@ func (h *UserHandler) LoginUser(c *gin.Context) {
 
 
 // TODO: Add verify phone number step similar to verify email step.
-// TODO: Add resend verification email and resend verification for mobile number endpoints
+// TODO: Add resend verification for mobile number endpoints
 // TODO: Add a login/register using google account option for ease of register/login functionality.
 func (h *UserHandler) AddUser(c *gin.Context) {
 	var addUserReq utils.AddUserRequest
