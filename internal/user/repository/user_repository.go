@@ -91,3 +91,7 @@ func GetUserByCredentials(email string, password string, database *db.Database) 
 	}
 	return models.User{}, errors.New("password doesn't match")
 }
+
+func RemoveExpiredTokens(database *db.Database) error {
+	return database.DB.Where("used = ? or expires_at < ?", true, time.Now()).Delete(&models.VerificationToken{}).Error
+}
