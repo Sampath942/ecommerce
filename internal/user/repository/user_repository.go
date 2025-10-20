@@ -17,7 +17,7 @@ func PerformAddUserAndCredentials(addUserReq utils.AddUserRequest, database *db.
 		Email:       addUserReq.Email,
 		PhoneNumber: addUserReq.PhoneNumber,
 		Address:     addUserReq.Address,
-		IsAdmin:     addUserReq.IsAdmin,
+		IsAdmin:     false,
 	}
 
 	err := database.DB.Transaction(func(tx *gorm.DB) error {
@@ -38,6 +38,16 @@ func PerformAddUserAndCredentials(addUserReq utils.AddUserRequest, database *db.
 
 func AddVerificationToken(verificationToken models.VerificationToken, database *db.Database) error {
 	return database.DB.Create(&verificationToken).Error
+}
+
+func AddUserFromGoogleID(googleID string, email string, name string, database *db.Database) error {
+	user := models.User{
+		Email:        email,
+		GoogleID:     googleID,
+		Name:         name,
+		AuthProvider: "Google",
+	}
+	return database.DB.Create(&user).Error
 }
 
 func GetVerificationDetailsFromToken(token string, database *db.Database) (models.VerificationToken, error) {
@@ -90,6 +100,26 @@ func GetUserByCredentials(email string, password string, database *db.Database) 
 		return user, nil
 	}
 	return models.User{}, errors.New("password doesn't match")
+}
+
+func GetUserByGoogleID(googleID string, database *db.Database) (models.User, error) {
+	var user models.User
+	result := database.DB.First(&user, "google_id = ?", googleID)
+	return user, result.Error
+}
+
+func GetUserByEmail(email string, database *db.Database) (models.User, error) {
+	var user models.User
+	result := database.DB.First(&user, "email = ?", email)
+	return user, result.Error
+}
+
+func UpdateUserGoogleID(user *models.User, googleID string, database *db.Database) error {
+	err := database.DB.Model(&models.User{}).Update("google_id", googleID).Error
+	if err != nil {
+		return err
+	}
+	return database.DB.Model(&models.User{}).Update("auth_provider", "Google").Error
 }
 
 func RemoveExpiredTokens(database *db.Database) error {

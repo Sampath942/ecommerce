@@ -9,10 +9,13 @@ import (
 type Config struct {
 	Port                    string `mapstructure:"PORT"`
 	DatabaseURL             string `mapstructure:"DATABASE_URL"`
-	TestDatabaseURL         string `mapstructure:"TEST_DATABASE_URL`
+	DatabaseURLTest         string `mapstructure:"DATABASE_URL_TEST`
 	JWTSecret               string `mapstructure:"JWT_SECRET_KEY"`
 	OtpSendingEmail         string `mapstructure:"OTP_SENDING_EMAIL"`
 	OtpSendingEmailPassword string `mapstructure:"OTP_SENDING_EMAIL_PASSWORD"`
+	OAuthClientID           string `mapstructure:"OAUTH_CLIENT_ID"`
+	OAuthClientSecret       string `mapstructure:"OAUTH_CLIENT_SECRET"`
+	OAuthRedirectURL        string `mapstructure:"OAUTH_REDIRECT_URL"`
 }
 
 var AppConfig *Config

@@ -10,7 +10,7 @@ import (
 )
 
 func NewTestDatabase() (*Database, error) {
-	dsn := config.AppConfig.TestDatabaseURL
+	dsn := config.AppConfig.DatabaseURLTest
 	database, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
 		return &Database{}, errors.New("couldn't get a connection to the database")

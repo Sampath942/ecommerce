@@ -129,7 +129,6 @@ func (h *UserHandler) LoginUser(c *gin.Context) {
 
 // TODO: Add verify phone number step similar to verify email step.
 // TODO: Add resend verification for mobile number endpoints
-// TODO: Add a login/register using google account option for ease of register/login functionality.
 func (h *UserHandler) AddUser(c *gin.Context) {
 	var addUserReq utils.AddUserRequest
 	err := c.ShouldBindJSON(&addUserReq)
@@ -200,12 +199,14 @@ func (h *UserHandler) AddUser(c *gin.Context) {
 	})
 }
 
+// TODO: Add actual functionality to update the user
 func (h *UserHandler) UpdateUser(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"Message": "Successfully hit put endpoint",
 	})
 }
 
+// TODO: Add actual functionality to delete the user
 func (h *UserHandler) DeleteUser(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"Message": "Successfully hit delete endpoint",

@@ -6,7 +6,6 @@ type AddUserRequest struct {
 	Password    string `json:"password"`
 	Address     string `json:"address,omitempty"`
 	PhoneNumber string `json:"phonenumber,omitempty"`
-	IsAdmin     bool   `json:"isadmin"`
 }
 
 type LoginUserRequest struct {

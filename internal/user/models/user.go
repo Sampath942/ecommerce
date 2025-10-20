@@ -6,8 +6,10 @@ type User struct {
 	Email           string `gorm:"unique;not null"`
 	PhoneNumber     string `gorm:"unique"`
 	Address         string
-	IsAdmin         bool `gorm:"notnull"`
-	IsEmailVerified bool `gorm:"default:false"`
+	IsAdmin         bool   `gorm:"notnull"`
+	IsEmailVerified bool   `gorm:"default:false"`
+	GoogleID        string `gorm:"unique"`
+	AuthProvider    string
 }
 
 func (User) TableName() string {
