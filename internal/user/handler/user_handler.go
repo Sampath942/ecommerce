@@ -2,11 +2,8 @@ package handler
 
 import (
 	"errors"
-	"fmt"
 	"log"
 	"net/http"
-	"net/mail"
-	"regexp"
 	"strings"
 
 	"github.com/Sampath942/ecommerce/internal/user/models"
@@ -23,38 +20,16 @@ func IsJWTExistingAndValid(authHeader string, h *UserHandler) (int, bool) {
 	}
 
 	authToken := strings.TrimPrefix(authHeader, "Bearer ")
-	fmt.Println("JWT is: " + authToken)
 	claims, err := h.AuthHandler.ValidateJWTToken(authToken)
 	if err != nil {
-		fmt.Println("ValidateJWTToken failed")
 		return -1, false
 	}
-	uid_float, exists := claims["user_id"].(float64)
-	fmt.Println("claims are: ", claims)
-	fmt.Println("uid is: ", uid_float)
+	u, exists := claims["user_id"].(float64)
+	uid := int(u)
 	if !exists {
-		fmt.Println("uid doesn't exist in claims fail")
 		return -1, false
 	}
-	uid := int(uid_float)
 	return uid, true
-}
-
-func isValidPassword(pw string) bool {
-	if len(pw) < 8 {
-		return false
-	}
-
-	upper := regexp.MustCompile(`[A-Z]`)
-	lower := regexp.MustCompile(`[a-z]`)
-	digit := regexp.MustCompile(`[0-9]`)
-	special := regexp.MustCompile(`[!@#$&*]`)
-
-	// At least 2 uppercase, 3 lowercase, 2 digits, and 1 special char
-	return upper.MatchString(pw) &&
-		lower.MatchString(pw) &&
-		digit.MatchString(pw) &&
-		special.MatchString(pw)
 }
 
 func (h *UserHandler) LoginUser(c *gin.Context) {
@@ -126,9 +101,6 @@ func (h *UserHandler) LoginUser(c *gin.Context) {
 	})
 }
 
-
-// TODO: Add verify phone number step similar to verify email step.
-// TODO: Add resend verification for mobile number endpoints
 func (h *UserHandler) AddUser(c *gin.Context) {
 	var addUserReq utils.AddUserRequest
 	err := c.ShouldBindJSON(&addUserReq)
@@ -140,8 +112,7 @@ func (h *UserHandler) AddUser(c *gin.Context) {
 		return
 	}
 
-	_, err = mail.ParseAddress(addUserReq.Email)
-	if err != nil {
+	if !utils.IsValidEmail(addUserReq.Email) {
 		c.JSON(http.StatusBadRequest, utils.Response{
 			ResponseMessage: "Request Failed",
 			ResponseDetails: "Email entered is not valid. Please check",
@@ -149,21 +120,20 @@ func (h *UserHandler) AddUser(c *gin.Context) {
 		return
 	}
 
-	re := regexp.MustCompile(`((\+*)((0[ -]*)*|((91 )*))((\d{12})+|(\d{10})+))|\d{5}([- ]*)\d{6}`)
-    if !re.MatchString(addUserReq.PhoneNumber) {
-        c.JSON(http.StatusBadRequest, utils.Response{
+	if !utils.IsValidPhoneNumber(addUserReq.PhoneNumber) {
+		c.JSON(http.StatusBadRequest, utils.Response{
 			ResponseMessage: "Request Failed",
 			ResponseDetails: "Phone number entered is not valid. Please check",
 		})
-   		return
+		return
 	}
 
-	if !isValidPassword(addUserReq.Password) {
-        c.JSON(http.StatusBadRequest, utils.Response{
+	if !utils.IsValidPassword(addUserReq.Password) {
+		c.JSON(http.StatusBadRequest, utils.Response{
 			ResponseMessage: "Request Failed",
 			ResponseDetails: "Password entered is not strong enough. Please check",
 		})
-   		return
+		return
 	}
 	hashedPassword, _ := bcrypt.GenerateFromPassword([]byte(addUserReq.Password), 10)
 	addUserReq.Password = string(hashedPassword)
@@ -189,7 +159,7 @@ func (h *UserHandler) AddUser(c *gin.Context) {
 		})
 		return
 	}
-	
+
 	c.JSON(http.StatusOK, utils.Response{
 		ResponseMessage: "Successfully registered user",
 		ResponseDetails: map[string]any{

@@ -44,5 +44,7 @@ func main() {
 	r.DELETE("/user", userHandler.DeleteUser)
 	r.GET("/auth/google/login", userHandler.GoogleLogin)
 	r.GET("/auth/google/callback", authhandler.ValidateGoogleCallback, userHandler.GoogleCallback)
+	r.GET("/request-otp", middleware.AuthMiddleware(&userHandler), userHandler.RequestOTP)
+	r.GET("/verify-otp", middleware.AuthMiddleware(&userHandler), userHandler.VerifyOTP)
 	r.Run(":" + config.AppConfig.Port)
 }

@@ -15,7 +15,7 @@ func PerformAddUserAndCredentials(addUserReq utils.AddUserRequest, database *db.
 	user := models.User{
 		Name:        addUserReq.Name,
 		Email:       addUserReq.Email,
-		PhoneNumber: addUserReq.PhoneNumber,
+		PhoneNumber: &addUserReq.PhoneNumber,
 		Address:     addUserReq.Address,
 		IsAdmin:     false,
 	}
@@ -43,7 +43,7 @@ func AddVerificationToken(verificationToken models.VerificationToken, database *
 func AddUserFromGoogleID(googleID string, email string, name string, database *db.Database) error {
 	user := models.User{
 		Email:        email,
-		GoogleID:     googleID,
+		GoogleID:     &googleID,
 		Name:         name,
 		AuthProvider: "Google",
 	}
@@ -68,6 +68,10 @@ func SetVerificationTokenToUsed(verificationToken models.VerificationToken, data
 
 func SetUserEmailVerified(user models.User, database *db.Database) error {
 	return database.DB.Model(&user).Where("id = ?", user.ID).Update("is_email_verified", true).Error
+}
+
+func SetUserPhoneVerified(user models.User, database *db.Database) error {
+	return database.DB.Model(&user).Where("id = ?", user.ID).Update("is_mobile_verified", true).Error
 }
 
 func GetUserById(id int, database *db.Database) (models.User, error) {
